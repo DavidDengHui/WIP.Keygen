@@ -12,7 +12,8 @@ namespace WIP.Keygen
         {
             InitializeComponent();
             // 设置窗体圆角
-            this.Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));            // 设置默认申请号
+            this.Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));
+            // 设置默认申请号
             txtRequest.Text = WIPHelper.GetCpuID();
         }
 
@@ -38,10 +39,7 @@ namespace WIP.Keygen
                 // 自动复制并提示
                 txtKey.SelectAll();
                 Clipboard.SetText(txtKey.Text);
-                MessageBox.Show("已复制注册码！\n注意：激活后软件默认用户名和密码都是dwduser",
-                                "提示",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
+                lblTips.Text = "已复制！";
             }
             catch (Exception ex)
             {
@@ -83,10 +81,7 @@ namespace WIP.Keygen
                 txtMonth.Text = dateParts[1];
                 txtDay.Text = dateParts[2];
 
-                MessageBox.Show($"该注册码验证成功，有效期到{dateParts[0]}年{dateParts[1]}月{dateParts[2]}日！",
-                                "验证成功",
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
+                lblTips.Text = "验证成功！";
             }
             catch (Exception ex)
             {
@@ -102,7 +97,13 @@ namespace WIP.Keygen
         private void btnExit_MouseHover(object sender, EventArgs e)
         {
             ToolTip toolTip = new ToolTip();
-            toolTip.SetToolTip(btnExit, "Alt+Q 退出注册机");
+            toolTip.SetToolTip(btnExit, "Alt+Q 退出");
+        }
+
+        private void btnOneClickRegister_MouseHover(object sender, EventArgs e)
+        {
+            ToolTip toolTip = new ToolTip();
+            toolTip.SetToolTip(btnOneClickRegister, "一键生成注册码并自动激活软件");
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -115,7 +116,13 @@ namespace WIP.Keygen
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        #region 输入控制
+        private void btnOneClickRegister_Click(object sender, EventArgs e)
+        {
+            // 一键注册按钮的点击事件逻辑
+            MessageBox.Show("功能待完善", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        #region 输入验证
         private void NumberTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
@@ -142,7 +149,7 @@ namespace WIP.Keygen
         {
             var textBox = (TextBox)sender;
 
-            // 处理方向键导航
+            // 处理日期输入框的导航
             if (e.KeyCode == Keys.Right)
             {
                 if (textBox.SelectionStart >= textBox.Text.Length)
@@ -241,7 +248,7 @@ namespace WIP.Keygen
         }
         #endregion
 
-        #region 窗体拖动和圆角
+        #region 窗体拖动
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
 
