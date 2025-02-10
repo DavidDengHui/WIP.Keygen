@@ -1,12 +1,11 @@
-﻿// MD5Helper.cs
-using System;
-using System.IO;
+﻿// WIPHelper.cs
 using System.Security.Cryptography;
 using System.Text;
+using System.Management;
 
 namespace WIP.Keygen
 {
-    public static class MD5Helper
+    public static class WIPHelper
     {
         public static string MD5Encrypt(string pToEncrypt, string sKey)
         {
@@ -54,5 +53,29 @@ namespace WIP.Keygen
             }
             return @string;
         }
+
+        public static string GetCpuID()
+        {
+            try
+            {
+                string cpuInfo = "BFEBFBFF000B0672";
+                ManagementClass val = new ManagementClass("Win32_Processor");
+                ManagementObjectCollection instances = val.GetInstances();
+                using (ManagementObjectCollection.ManagementObjectEnumerator managementObjectEnumerator = instances.GetEnumerator())
+                {
+                    if (managementObjectEnumerator.MoveNext())
+                    {
+                        ManagementObject mo = (ManagementObject)managementObjectEnumerator.Current;
+                        cpuInfo = mo.Properties["ProcessorId"].Value?.ToString() ?? "BFEBFBFF000B0672";
+                    }
+                }
+                return cpuInfo;
+            }
+            catch
+            {
+                return "BFEBFBFF000B0672";
+            }
+        }
+
     }
 }

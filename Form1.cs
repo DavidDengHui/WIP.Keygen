@@ -12,7 +12,8 @@ namespace WIP.Keygen
         {
             InitializeComponent();
             // 设置窗体圆角
-            this.Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));
+            this.Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));            // 设置默认申请号
+            txtRequest.Text = WIPHelper.GetCpuID();
         }
 
         private string BuildExpiryDate()
@@ -31,7 +32,7 @@ namespace WIP.Keygen
             try
             {
                 string plainText = $"{txtRequest.Text.Trim()}_{BuildExpiryDate()}";
-                string encryptedString = MD5Helper.MD5Encrypt(plainText, SecretKey);
+                string encryptedString = WIPHelper.MD5Encrypt(plainText, SecretKey);
                 txtKey.Text = encryptedString;
 
                 // 自动复制并提示
@@ -58,7 +59,7 @@ namespace WIP.Keygen
 
             try
             {
-                string decryptedString = MD5Helper.MD5Decrypt(txtKey.Text, SecretKey);
+                string decryptedString = WIPHelper.MD5Decrypt(txtKey.Text, SecretKey);
 
                 if (!decryptedString.Contains("_"))
                 {
