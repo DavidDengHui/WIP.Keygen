@@ -32,3 +32,10 @@ foreach ($command in $commands) {
     Write-Host "执行命令: $command"
     Invoke-Expression $command
 }
+
+mv bin/Release/$version/win-x64/WIP.Keygen.exe bin/Release/$version/WIP.Keygen.x64.exe
+mv bin/Release/$version/win-x64-net/WIP.Keygen.exe bin/Release/$version/WIP.Keygen.x64-net.exe
+mv bin/Release/$version/win-x86/WIP.Keygen.exe bin/Release/$version/WIP.Keygen.x86.exe
+mv bin/Release/$version/win-x86-net/WIP.Keygen.exe bin/Release/$version/WIP.Keygen.x86-net.exe
+
+rm -r bin/Release/$version/win-*
