@@ -1,4 +1,4 @@
-name: .NET Desktop
+name: Build WIP.Keygen
 
 on:
   push:
@@ -76,8 +76,9 @@ jobs:
     - name: Create Release
       env:
         VERSION: ${{ env.VERSION }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
+        echo $env:GH_TOKEN | gh auth login --with-token
         gh release create $env:VERSION `
           bin/Release/win-x64/WIP.Keygen.x64.exe `
           bin/Release/win-x64-net/WIP.Keygen.x64-net.exe `
