@@ -1,0 +1,72 @@
+name: .NET Desktop
+
+on:
+  push:
+    branches:
+      - v1.0
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        ref: v1.0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Get version from csproj
+      id: get_version
+      run: |
+        version=$(cat WIP.Keygen.csproj | grep '<Version>' | sed -E 's/.*<Version>(.*)<\/Version>.*/\1/')
+        echo "VERSION=$version" >> $GITHUB_ENV
+
+    - name: Get latest release version
+      id: get_latest_release
+      run: |
+        latest_release=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
+        echo "LATEST_RELEASE=$latest_release" >> $GITHUB_ENV
+
+    - name: Compare versions
+      id: compare_versions
+      run: |
+        if [ "${{ env.VERSION }}" == "${{ env.LATEST_RELEASE }}" ]; then
+          echo "Version is the same as the latest release. Exiting..."
+          exit 0
+        fi
+
+    - name: Build for win-x64
+      run: |
+        dotnet publish WIP.Keygen.csproj -c Release -r win-x64 --output bin/Release/win-x64 --self-contained false -p:PublishSingleFile=true
+        mv bin/Release/win-x64/WIP.Keygen.exe bin/Release/win-x64/WIP.Keygen.x64.exe
+
+    - name: Build for win-x64-net
+      run: |
+        dotnet publish WIP.Keygen.csproj -c Release -r win-x64 --output bin/Release/win-x64-net --self-contained true -p:PublishSingleFile=true
+        mv bin/Release/win-x64-net/WIP.Keygen.exe bin/Release/win-x64-net/WIP.Keygen.x64-net.exe
+
+    - name: Build for win-x86
+      run: |
+        dotnet publish WIP.Keygen.csproj -c Release -r win-x86 --output bin/Release/win-x86 --self-contained false -p:PublishSingleFile=true
+        mv bin/Release/win-x86/WIP.Keygen.exe bin/Release/win-x86/WIP.Keygen.x86.exe
+
+    - name: Build for win-x86-net
+      run: |
+        dotnet publish WIP.Keygen.csproj -c Release -r win-x86 --output bin/Release/win-x86-net --self-contained true -p:PublishSingleFile=true
+        mv bin/Release/win-x86-net/WIP.Keygen.exe bin/Release/win-x86-net/WIP.Keygen.x86-net.exe
+
+    - name: Create Release
+      env:
+        VERSION: ${{ env.VERSION }}
+      run: |
+        gh release create $VERSION \
+          bin/Release/win-x64/WIP.Keygen.x64.exe \
+          bin/Release/win-x64-net/WIP.Keygen.x64-net.exe \
+          bin/Release/win-x86/WIP.Keygen.x86.exe \
+          bin/Release/win-x86-net/WIP.Keygen.x86-net.exe \
+          -t $VERSION -n "$(git log -1 --pretty=%B)"
