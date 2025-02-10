@@ -22,23 +22,26 @@ jobs:
 
     - name: Get version from csproj
       id: get_version
+      shell: pwsh
       run: |
-        version=$(cat WIP.Keygen.csproj | grep '<Version>' | sed -E 's/.*<Version>(.*)<\/Version>.*/\1/')
-        echo "VERSION=$version" >> $GITHUB_ENV
+        $version = (Select-String -Path WIP.Keygen.csproj -Pattern '<Version>(.*)</Version>').Matches.Groups[1].Value
+        echo "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
     - name: Get latest release version
       id: get_latest_release
+      shell: pwsh
       run: |
-        latest_release=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
-        echo "LATEST_RELEASE=$latest_release" >> $GITHUB_ENV
+        $latest_release = (Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases/latest").tag_name
+        echo "LATEST_RELEASE=$latest_release" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
     - name: Compare versions
       id: compare_versions
+      shell: pwsh
       run: |
-        if [ "${{ env.VERSION }}" == "${{ env.LATEST_RELEASE }}" ]; then
-          echo "Version is the same as the latest release. Exiting..."
+        if ($env:VERSION -eq $env:LATEST_RELEASE) {
+          Write-Host "Version is the same as the latest release. Exiting..."
           exit 0
-        fi
+        }
 
     - name: Build for win-x64
       run: |
