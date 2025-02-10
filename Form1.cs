@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
 using System.Windows.Forms;
 
 namespace WIP.Keygen
@@ -140,7 +142,7 @@ namespace WIP.Keygen
         private void btnOneClickRegister_MouseHover(object sender, EventArgs e)
         {
             ToolTip toolTip = new ToolTip();
-            toolTip.SetToolTip(btnOneClickRegister, "一键生成注册码并自动激活软件");
+            toolTip.SetToolTip(btnOneClickRegister, "一键激活需要管理员权限，点击后请允许授权！");
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -153,10 +155,56 @@ namespace WIP.Keygen
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        private bool IsAdministrator()
+        {
+            WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            WindowsPrincipal principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
+        }
+
+        private void RestartAsAdministrator()
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                WorkingDirectory = Environment.CurrentDirectory,
+                FileName = Application.ExecutablePath,
+                Verb = "runas"
+            };
+
+            try
+            {
+                Process.Start(startInfo);
+                Application.Exit();
+            }
+            catch
+            {
+                MessageBox.Show("提权失败！\n请尝试手动以管理员权限运行程序！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
         private void btnOneClickRegister_Click(object sender, EventArgs e)
         {
-            // 一键注册按钮的点击事件逻辑
-            MessageBox.Show("功能待完善", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (IsAdministrator())
+            {
+                btnGenerate_Click(sender, e);
+                string valiteDate = txtKey.Text;
+                bool result = WIPHelper.SetRegister(valiteDate);
+                if (result)
+                {
+                    MessageBox.Show("仅供内部使用，请勿外传！", "激活成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("注册失败，请检查申请号！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                RestartAsAdministrator();
+            }
+
         }
 
         #region 输入验证

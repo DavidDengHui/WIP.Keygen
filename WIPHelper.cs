@@ -1,7 +1,12 @@
 ﻿// WIPHelper.cs
+using System;
+using System.Windows.Forms;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Management;
+using Microsoft.Win32;
+using System.Security.AccessControl;
 
 namespace WIP.Keygen
 {
@@ -74,6 +79,38 @@ namespace WIP.Keygen
             catch
             {
                 return "BFEBFBFF000B0672";
+            }
+        }
+
+        public static bool SetRegister(string valiteDate)
+        {
+            try
+            {
+                string text = "SOFTWARE\\THCSoftware\\Signal";
+                string text2 = MD5Decrypt(valiteDate.ToString(), "FreezeZL");
+                string[] array = text2.Split('_');
+                if (GetCpuID() == array[0])
+                {
+                    DateTime dateTime = DateTime.Parse(array[1]);
+                    DateTime now = DateTime.Now;
+                    RegistryKey? registryKey = Registry.LocalMachine.OpenSubKey(text, RegistryKeyPermissionCheck.ReadWriteSubTree, RegistryRights.FullControl);
+                    if (registryKey == null)
+                    {
+                        registryKey = Registry.LocalMachine.CreateSubKey(text, RegistryKeyPermissionCheck.ReadWriteSubTree);
+                    }
+                    registryKey.SetValue("Version", "1.0", RegistryValueKind.String);
+                    registryKey.SetValue("Author", "WIP", RegistryValueKind.String);
+                    registryKey.SetValue("InstallDateWIP", DateTime.Now.ToString(), RegistryValueKind.String);
+                    registryKey.SetValue("AppPath", Application.StartupPath, RegistryValueKind.String);
+                    registryKey.SetValue("ValiteDateWIP", valiteDate, RegistryValueKind.String);
+
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
 
