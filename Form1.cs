@@ -15,6 +15,10 @@ namespace WIP.Keygen
             this.Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));
             // 设置默认申请号
             txtRequest.Text = WIPHelper.GetCpuID();
+
+            // Add event handlers for focus leave events
+            txtKey.Leave += new EventHandler(txtKey_Leave);
+            txtRequest.Leave += new EventHandler(txtRequest_Leave);
         }
 
         private string BuildExpiryDate()
@@ -36,9 +40,11 @@ namespace WIP.Keygen
                 string encryptedString = WIPHelper.MD5Encrypt(plainText, SecretKey);
                 txtKey.Text = encryptedString;
 
-                // 自动复制并提示
+                // Set focus to txtKey and select all text
+                txtKey.Focus();
                 txtKey.SelectAll();
                 Clipboard.SetText(txtKey.Text);
+
                 lblTips.Text = "已复制！";
             }
             catch (Exception ex)
@@ -81,12 +87,42 @@ namespace WIP.Keygen
                 txtMonth.Text = dateParts[1];
                 txtDay.Text = dateParts[2];
 
+                // Set focus to txtRequest and select all text
+                txtRequest.Focus();
+                txtRequest.SelectAll();
+
+                // Change background color of date text boxes
+                txtYear.BackColor = Color.GreenYellow;
+                txtYear.ForeColor = Color.Black;
+                txtMonth.BackColor = Color.GreenYellow;
+                txtMonth.ForeColor = Color.Black;
+                txtDay.BackColor = Color.GreenYellow;
+                txtDay.ForeColor = Color.Black;
+
                 lblTips.Text = "验证成功！";
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"验证失败: {ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void txtKey_Leave(object? sender, EventArgs e)
+        {
+            lblTips.Text = "";
+        }
+
+        private void txtRequest_Leave(object? sender, EventArgs e)
+        {
+            lblTips.Text = "";
+
+            // Reset background color of date text boxes
+            txtYear.BackColor = Color.FromArgb(30, 30, 30);
+            txtYear.ForeColor = Color.White;
+            txtMonth.BackColor = Color.FromArgb(30, 30, 30);
+            txtMonth.ForeColor = Color.White;
+            txtDay.BackColor = Color.FromArgb(30, 30, 30);
+            txtDay.ForeColor = Color.White;
         }
 
         private void btnExit_Click(object sender, EventArgs e)

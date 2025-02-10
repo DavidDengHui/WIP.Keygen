@@ -10,7 +10,7 @@
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<PublishSingleFile>true</PublishSingleFile>
 		<SelfContained>false</SelfContained>
-		<Version>1.2.1</Version>
+		<Version>1.2.2</Version>
 	</PropertyGroup>
 
 	<ItemGroup>

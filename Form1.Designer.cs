@@ -87,6 +87,7 @@
             txtRequest.Name = "txtRequest";
             txtRequest.Size = new Size(200, 26);
             txtRequest.TabIndex = 1;
+            txtRequest.TextAlign = HorizontalAlignment.Center;
             txtRequest.KeyDown += TextBox_KeyDown;
             // 
             // lblExpiry
@@ -112,6 +113,7 @@
             txtYear.Size = new Size(55, 26);
             txtYear.TabIndex = 3;
             txtYear.Text = "9999";
+            txtYear.TextAlign = HorizontalAlignment.Center;
             txtYear.Enter += DateTextBox_Enter;
             txtYear.KeyDown += DateTextBox_KeyDown;
             txtYear.KeyPress += NumberTextBox_KeyPress;
@@ -139,6 +141,7 @@
             txtMonth.Size = new Size(35, 26);
             txtMonth.TabIndex = 5;
             txtMonth.Text = "12";
+            txtMonth.TextAlign = HorizontalAlignment.Center;
             txtMonth.Enter += DateTextBox_Enter;
             txtMonth.KeyDown += DateTextBox_KeyDown;
             txtMonth.KeyPress += NumberTextBox_KeyPress;
@@ -166,6 +169,7 @@
             txtDay.Size = new Size(35, 26);
             txtDay.TabIndex = 7;
             txtDay.Text = "31";
+            txtDay.TextAlign = HorizontalAlignment.Center;
             txtDay.Enter += DateTextBox_Enter;
             txtDay.KeyDown += DateTextBox_KeyDown;
             txtDay.KeyPress += NumberTextBox_KeyPress;
@@ -273,9 +277,8 @@
             lblTips.ForeColor = Color.GreenYellow;
             lblTips.Location = new Point(20, 241);
             lblTips.Name = "lblTips";
-            lblTips.Size = new Size(68, 17);
+            lblTips.Size = new Size(0, 17);
             lblTips.TabIndex = 16;
-            lblTips.Text = "";
             // 
             // Form1
             // 
