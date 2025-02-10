@@ -20,6 +20,11 @@ jobs:
       with:
         dotnet-version: '6.0.x'
 
+    - name: Install GitHub CLI
+      run: |
+        Invoke-WebRequest -Uri https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_windows_amd64.msi -OutFile gh.msi
+        Start-Process msiexec.exe -ArgumentList '/i', 'gh.msi', '/quiet', '/norestart' -NoNewWindow -Wait
+
     - name: Get version from csproj
       id: get_version
       shell: pwsh
@@ -70,10 +75,11 @@ jobs:
     - name: Create Release
       env:
         VERSION: ${{ env.VERSION }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh release create $VERSION \
-          bin/Release/win-x64/WIP.Keygen.x64.exe \
-          bin/Release/win-x64-net/WIP.Keygen.x64-net.exe \
-          bin/Release/win-x86/WIP.Keygen.x86.exe \
-          bin/Release/win-x86-net/WIP.Keygen.x86-net.exe \
+        gh release create $VERSION `
+          bin/Release/win-x64/WIP.Keygen.x64.exe `
+          bin/Release/win-x64-net/WIP.Keygen.x64-net.exe `
+          bin/Release/win-x86/WIP.Keygen.x86.exe `
+          bin/Release/win-x86-net/WIP.Keygen.x86-net.exe `
           -t $VERSION -n "$(git log -1 --pretty=%B)"
