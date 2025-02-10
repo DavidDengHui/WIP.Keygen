@@ -22,6 +22,16 @@ namespace WIP.Keygen
             // Add event handlers for focus leave events
             txtKey.Leave += new EventHandler(txtKey_Leave);
             txtRequest.Leave += new EventHandler(txtRequest_Leave);
+
+            // Add event handlers for dragging the window
+            AddDragControl(lblRequest);
+            AddDragControl(lblExpiry);
+            AddDragControl(lblYear);
+            AddDragControl(lblMonth);
+            AddDragControl(lblDay);
+            AddDragControl(lblKey);
+            AddDragControl(lblTitle);
+            AddDragControl(lblTips);
         }
 
         private string BuildExpiryDate()
@@ -347,6 +357,20 @@ namespace WIP.Keygen
         public static extern IntPtr CreateRoundRectRgn(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect, int nWidthEllipse, int nHeightEllipse);
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
+        }
+
+        private void AddDragControl(Control control)
+        {
+            control.MouseDown += new MouseEventHandler(Control_MouseDown);
+        }
+
+        private void Control_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
