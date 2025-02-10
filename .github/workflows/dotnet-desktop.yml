@@ -24,6 +24,7 @@ jobs:
       run: |
         Invoke-WebRequest -Uri https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_windows_amd64.msi -OutFile gh.msi
         Start-Process msiexec.exe -ArgumentList '/i', 'gh.msi', '/quiet', '/norestart' -NoNewWindow -Wait
+        echo "::add-path::C:\Program Files\GitHub CLI"
 
     - name: Get version from csproj
       id: get_version
@@ -77,9 +78,9 @@ jobs:
         VERSION: ${{ env.VERSION }}
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh release create $VERSION `
+        gh release create $env:VERSION `
           bin/Release/win-x64/WIP.Keygen.x64.exe `
           bin/Release/win-x64-net/WIP.Keygen.x64-net.exe `
           bin/Release/win-x86/WIP.Keygen.x86.exe `
           bin/Release/win-x86-net/WIP.Keygen.x86-net.exe `
-          -t $VERSION -n "$(git log -1 --pretty=%B)"
+          -t $env:VERSION -n "$(git log -1 --pretty=%B)"
