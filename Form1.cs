@@ -370,7 +370,7 @@ namespace WIP.Keygen
             control.MouseDown += new MouseEventHandler(Control_MouseDown);
         }
 
-        private void Control_MouseDown(object sender, MouseEventArgs e)
+        private void Control_MouseDown(object? sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
