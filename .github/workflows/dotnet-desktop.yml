@@ -24,7 +24,7 @@ jobs:
       run: |
         Invoke-WebRequest -Uri https://github.com/cli/cli/releases/download/v2.14.7/gh_2.14.7_windows_amd64.msi -OutFile gh.msi
         Start-Process msiexec.exe -ArgumentList '/i', 'gh.msi', '/quiet', '/norestart' -NoNewWindow -Wait
-        echo "::add-path::C:\Program Files\GitHub CLI"
+        echo "C:\Program Files\GitHub CLI" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - name: Get version from csproj
       id: get_version
