@@ -11,6 +11,7 @@ namespace WIP.Keygen
         public Form1()
         {
             InitializeComponent();
+            this.TopMost = true;
             // …Ë÷√¥∞ÃÂ‘≤Ω«
             this.Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));
             // …Ë÷√ƒ¨»œ…Í«Î∫≈
