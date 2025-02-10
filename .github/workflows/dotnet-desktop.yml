@@ -78,13 +78,14 @@ jobs:
 
     - name: Create Release
       env:
-        VERSION: ${{ env.VERSION }}
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      shell: pwsh
       run: |
+        $version = (Select-String -Path WIP.Keygen.csproj -Pattern '<Version>(.*)</Version>').Matches.Groups[1].Value
         echo $env:GH_TOKEN | gh auth login --with-token
-        gh release create $env:VERSION `
+        gh release create $version `
           bin/Release/win-x64/WIP.Keygen.x64.exe `
           bin/Release/win-x64-net/WIP.Keygen.x64-net.exe `
           bin/Release/win-x86/WIP.Keygen.x86.exe `
           bin/Release/win-x86-net/WIP.Keygen.x86-net.exe `
-          -t $env:VERSION -n "$(git log -1 --pretty=%B)"
+          -t $version -n "$(git log -1 --pretty=%B)"
