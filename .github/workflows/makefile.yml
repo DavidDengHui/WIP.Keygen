@@ -38,7 +38,7 @@ jobs:
           exit 1
         }
 
-  build:
+  build-publish:
     runs-on: windows-latest
     needs: check-version
     steps:
@@ -48,7 +48,7 @@ jobs:
     - name: Install .NET Framework Developer Pack
       run: |
         choco install dotnetfx --version=4.8.0.20190930
-        choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
+        choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
 
     - name: Install GitHub CLI
       run: |
@@ -56,24 +56,28 @@ jobs:
         Start-Process msiexec.exe -ArgumentList '/i', 'gh.msi', '/quiet', '/norestart' -NoNewWindow -Wait
         echo "C:\Program Files\GitHub CLI" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
+    - name: Restore NuGet packages
+      run: |
+        dotnet restore WIP.Keygen.csproj
+
     - name: Build for win-x64
       run: |
-        & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:OutputPath=bin\Release\win-x64 /p:SelfContained=false /p:PublishSingleFile=true /t:Publish
+        & "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:OutputPath=bin\Release\win-x64 /p:SelfContained=false /p:PublishSingleFile=true /t:Publish
         mv bin/Release/win-x64publish/WIP.Keygen.exe bin/Release/WIP.Keygen.x64.exe
 
     - name: Build for win-x64-net
       run: |
-        & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:OutputPath=bin\Release\win-x64-net /p:SelfContained=true /p:PublishSingleFile=true /t:Publish
+        & "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:OutputPath=bin\Release\win-x64-net /p:SelfContained=true /p:PublishSingleFile=true /t:Publish
         mv bin/Release/win-x64-netpublish/WIP.Keygen.exe bin/Release/WIP.Keygen.x64-net.exe
 
     - name: Build for win-x86
       run: |
-        & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x86 /p:OutputPath=bin\Release\win-x86 /p:SelfContained=false /p:PublishSingleFile=true /t:Publish
+        & "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x86 /p:OutputPath=bin\Release\win-x86 /p:SelfContained=false /p:PublishSingleFile=true /t:Publish
         mv bin/Release/win-x86publish/WIP.Keygen.exe bin/Release/WIP.Keygen.x86.exe
 
     - name: Build for win-x86-net
       run: |
-        & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x86 /p:OutputPath=bin\Release\win-x86-net /p:SelfContained=true /p:PublishSingleFile=true /t:Publish
+        & "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x86 /p:OutputPath=bin\Release\win-x86-net /p:SelfContained=true /p:PublishSingleFile=true /t:Publish
         mv bin/Release/win-x86-netpublish/WIP.Keygen.exe bin/Release/WIP.Keygen.x86-net.exe
 
     - name: Create Release
