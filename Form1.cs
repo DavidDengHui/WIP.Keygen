@@ -149,12 +149,6 @@ namespace WIP.Keygen
             toolTip.SetToolTip(btnExit, "Alt+Q 退出");
         }
 
-        private void btnOneClickRegister_MouseHover(object sender, EventArgs e)
-        {
-            ToolTip toolTip = new ToolTip();
-            toolTip.SetToolTip(btnOneClickRegister, "一键激活需要管理员权限，点击后请允许授权！");
-        }
-
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.Alt | Keys.Q))
@@ -163,6 +157,15 @@ namespace WIP.Keygen
                 return true;
             }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        #region 一键激活
+        private void btnOneClickRegister_MouseHover(object sender, EventArgs e)
+        {
+            ToolTip toolTip = new ToolTip();
+            if (IsAdministrator())
+                toolTip.SetToolTip(btnOneClickRegister, "立即完成激活！注意：软件启动用户和密码都是dwduser");
+            else toolTip.SetToolTip(btnOneClickRegister, "一键激活需要管理员权限，点击后请允许授权！");
         }
 
         private bool IsAdministrator()
@@ -216,6 +219,7 @@ namespace WIP.Keygen
             }
 
         }
+        #endregion
 
         #region 输入验证
         private void NumberTextBox_KeyPress(object sender, KeyPressEventArgs e)

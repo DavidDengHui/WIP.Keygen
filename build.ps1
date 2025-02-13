@@ -12,11 +12,13 @@ if (-not $version) {
 } else {
     Write-Host "当前项目版本号: $version"
 }
+
+$msbuildPath = "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
 $commands = @(
-    "dotnet publish $projectFile -c Release -r win-x64 --output bin/Release/$version/win-x64 --self-contained false -p:PublishSingleFile=true",
-    "dotnet publish $projectFile -c Release -r win-x64 --output bin/Release/$version/win-x64-net --self-contained true -p:PublishSingleFile=true",
-    "dotnet publish $projectFile -c Release -r win-x86 --output bin/Release/$version/win-x86 --self-contained false -p:PublishSingleFile=true",
-    "dotnet publish $projectFile -c Release -r win-x86 --output bin/Release/$version/win-x86-net --self-contained true -p:PublishSingleFile=true"
+    "& `"$msbuildPath`" `"$projectFile`" /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:OutputPath=bin\Release\$version\win-x64 /p:SelfContained=false /p:PublishSingleFile=true /t:Publish",
+    "& `"$msbuildPath`" `"$projectFile`" /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:OutputPath=bin\Release\$version\win-x64-net /p:SelfContained=true /p:PublishSingleFile=true /t:Publish",
+    "& `"$msbuildPath`" `"$projectFile`" /p:Configuration=Release /p:RuntimeIdentifier=win-x86 /p:OutputPath=bin\Release\$version\win-x86 /p:SelfContained=false /p:PublishSingleFile=true /t:Publish",
+    "& `"$msbuildPath`" `"$projectFile`" /p:Configuration=Release /p:RuntimeIdentifier=win-x86 /p:OutputPath=bin\Release\$version\win-x86-net /p:SelfContained=true /p:PublishSingleFile=true /t:Publish"
 )
 foreach ($command in $commands) {
     Write-Host "执行命令: $command"
@@ -27,10 +29,11 @@ $folPath = "bin/Release/" + $version + "/win-"
 $targetFiles = @( "x64", "x64-net", "x86", "x86-net" )
 foreach ($tag in $targetFiles) {
     $newPath = $delPath + $tag + ".exe"
-    $oldPath = $folPath + $tag + "/WIP.Keygen.exe"
-    if (Test-Path $newPath -PathType Leaf) {
-        Remove-Item $newPath -Force -ErrorAction Stop
+    $oldPath = $folPath + $tag + "publish/WIP.Keygen.exe"
+    if (Test-Path $oldPath -PathType Leaf) {
+        Move-Item $oldPath $newPath -Force -ErrorAction Stop
+    } else {
+        Write-Host "找不到路径 $oldPath"
     }
-    Move-Item $oldPath $newPath -Force -ErrorAction Stop
 }
 Remove-Item $folPath* -Recurse -Force -ErrorAction Stop

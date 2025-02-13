@@ -3,7 +3,7 @@ name: MakeFile
 on:
   push:
     branches:
-      - v1.0
+      - v1
 
 jobs:
   check-version:
@@ -45,10 +45,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '6.0.x'
+    - name: Install .NET Framework Developer Pack
+      run: |
+        choco install dotnetfx --version=4.8.0.20190930
+        choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.ManagedDesktopBuildTools --includeRecommended --includeOptional"
 
     - name: Install GitHub CLI
       run: |
@@ -58,23 +58,23 @@ jobs:
 
     - name: Build for win-x64
       run: |
-        dotnet publish WIP.Keygen.csproj -c Release -r win-x64 --output bin/Release/win-x64 --self-contained false -p:PublishSingleFile=true
-        mv bin/Release/win-x64/WIP.Keygen.exe bin/Release/win-x64/WIP.Keygen.x64.exe
+        & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:OutputPath=bin\Release\win-x64 /p:SelfContained=false /p:PublishSingleFile=true /t:Publish
+        mv bin/Release/win-x64publish/WIP.Keygen.exe bin/Release/WIP.Keygen.x64.exe
 
     - name: Build for win-x64-net
       run: |
-        dotnet publish WIP.Keygen.csproj -c Release -r win-x64 --output bin/Release/win-x64-net --self-contained true -p:PublishSingleFile=true
-        mv bin/Release/win-x64-net/WIP.Keygen.exe bin/Release/win-x64-net/WIP.Keygen.x64-net.exe
+        & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:OutputPath=bin\Release\win-x64-net /p:SelfContained=true /p:PublishSingleFile=true /t:Publish
+        mv bin/Release/win-x64-netpublish/WIP.Keygen.exe bin/Release/WIP.Keygen.x64-net.exe
 
     - name: Build for win-x86
       run: |
-        dotnet publish WIP.Keygen.csproj -c Release -r win-x86 --output bin/Release/win-x86 --self-contained false -p:PublishSingleFile=true
-        mv bin/Release/win-x86/WIP.Keygen.exe bin/Release/win-x86/WIP.Keygen.x86.exe
+        & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x86 /p:OutputPath=bin\Release\win-x86 /p:SelfContained=false /p:PublishSingleFile=true /t:Publish
+        mv bin/Release/win-x86publish/WIP.Keygen.exe bin/Release/WIP.Keygen.x86.exe
 
     - name: Build for win-x86-net
       run: |
-        dotnet publish WIP.Keygen.csproj -c Release -r win-x86 --output bin/Release/win-x86-net --self-contained true -p:PublishSingleFile=true
-        mv bin/Release/win-x86-net/WIP.Keygen.exe bin/Release/win-x86-net/WIP.Keygen.x86-net.exe
+        & "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x86 /p:OutputPath=bin\Release\win-x86-net /p:SelfContained=true /p:PublishSingleFile=true /t:Publish
+        mv bin/Release/win-x86-netpublish/WIP.Keygen.exe bin/Release/WIP.Keygen.x86-net.exe
 
     - name: Create Release
       env:
@@ -84,8 +84,8 @@ jobs:
         $version = (Select-String -Path WIP.Keygen.csproj -Pattern '<Version>(.*)</Version>').Matches.Groups[1].Value
         echo $env:GH_TOKEN | gh auth login --with-token
         gh release create $version `
-          bin/Release/win-x64/WIP.Keygen.x64.exe `
-          bin/Release/win-x64-net/WIP.Keygen.x64-net.exe `
-          bin/Release/win-x86/WIP.Keygen.x86.exe `
-          bin/Release/win-x86-net/WIP.Keygen.x86-net.exe `
+          bin/Release/WIP.Keygen.x64.exe `
+          bin/Release/WIP.Keygen.x64-net.exe `
+          bin/Release/WIP.Keygen.x86.exe `
+          bin/Release/WIP.Keygen.x86-net.exe `
           -t $version -n "$(git log -1 --pretty=%B)"
