@@ -14,16 +14,12 @@ namespace WIP.Keygen
         {
             InitializeComponent();
             this.TopMost = true;
-            // …Ë÷√¥∞ÃÂ‘≤Ω«
             this.Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));
-            // …Ë÷√ƒ¨»œ…Í«Î∫≈
             txtRequest.Text = WIPHelper.GetCpuID();
 
-            // Add event handlers for focus leave events
             txtKey.Leave += new EventHandler(txtKey_Leave);
             txtRequest.Leave += new EventHandler(txtRequest_Leave);
 
-            // Add event handlers for dragging the window
             AddDragControl(lblRequest);
             AddDragControl(lblExpiry);
             AddDragControl(lblYear);
@@ -32,6 +28,12 @@ namespace WIP.Keygen
             AddDragControl(lblKey);
             AddDragControl(lblTitle);
             AddDragControl(lblTips);
+
+            if (IsAdministrator())
+            {
+                btnOneClickRegister_Click(this, EventArgs.Empty);
+            }
+
         }
 
         private string BuildExpiryDate()
@@ -53,7 +55,6 @@ namespace WIP.Keygen
                 string encryptedString = WIPHelper.MD5Encrypt(plainText, SecretKey);
                 txtKey.Text = encryptedString;
 
-                // Set focus to txtKey and select all text
                 txtKey.Focus();
                 txtKey.SelectAll();
                 Clipboard.SetText(txtKey.Text);
@@ -100,11 +101,9 @@ namespace WIP.Keygen
                 txtMonth.Text = dateParts[1];
                 txtDay.Text = dateParts[2];
 
-                // Set focus to txtRequest and select all text
                 txtRequest.Focus();
                 txtRequest.SelectAll();
 
-                // Change background color of date text boxes
                 txtYear.BackColor = Color.GreenYellow;
                 txtYear.ForeColor = Color.Black;
                 txtMonth.BackColor = Color.GreenYellow;
@@ -129,7 +128,6 @@ namespace WIP.Keygen
         {
             lblTips.Text = "";
 
-            // Reset background color of date text boxes
             txtYear.BackColor = Color.FromArgb(30, 30, 30);
             txtYear.ForeColor = Color.White;
             txtMonth.BackColor = Color.FromArgb(30, 30, 30);

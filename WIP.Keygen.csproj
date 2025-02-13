@@ -10,7 +10,7 @@
 		<RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
 		<PublishSingleFile>true</PublishSingleFile>
 		<SelfContained>false</SelfContained>
-		<Version>1.4.0</Version>
+		<Version>1.4.1</Version>
 		<AssemblyName>WIP.Keygen</AssemblyName>
 	</PropertyGroup>
 
