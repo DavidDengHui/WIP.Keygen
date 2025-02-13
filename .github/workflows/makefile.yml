@@ -69,22 +69,22 @@ jobs:
 
     - name: Build for win-x64
       run: |
-        & ${{ steps.find_msbuild.outputs.msbuild_path }} WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:OutputPath=bin\Release\win-x64 /p:SelfContained=false /p:PublishSingleFile=true /t:Publish
+        & "${{ steps.find_msbuild.outputs.msbuild_path }}" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:OutputPath=bin\Release\win-x64 /p:SelfContained=false /p:PublishSingleFile=true /t:Publish
         mv bin/Release/win-x64publish/WIP.Keygen.exe bin/Release/WIP.Keygen.x64.exe
 
     - name: Build for win-x64-net
       run: |
-        & ${{ steps.find_msbuild.outputs.msbuild_path }} WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:OutputPath=bin\Release\win-x64-net /p:SelfContained=true /p:PublishSingleFile=true /t:Publish
+        & "${{ steps.find_msbuild.outputs.msbuild_path }}" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:OutputPath=bin\Release\win-x64-net /p:SelfContained=true /p:PublishSingleFile=true /t:Publish
         mv bin/Release/win-x64-netpublish/WIP.Keygen.exe bin/Release/WIP.Keygen.x64-net.exe
 
     - name: Build for win-x86
       run: |
-        & ${{ steps.find_msbuild.outputs.msbuild_path }} WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x86 /p:OutputPath=bin\Release\win-x86 /p:SelfContained=false /p:PublishSingleFile=true /t:Publish
+        & "${{ steps.find_msbuild.outputs.msbuild_path }}" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x86 /p:OutputPath=bin\Release\win-x86 /p:SelfContained=false /p:PublishSingleFile=true /t:Publish
         mv bin/Release/win-x86publish/WIP.Keygen.exe bin/Release/WIP.Keygen.x86.exe
 
     - name: Build for win-x86-net
       run: |
-        & ${{ steps.find_msbuild.outputs.msbuild_path }} WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x86 /p:OutputPath=bin\Release\win-x86-net /p:SelfContained=true /p:PublishSingleFile=true /t:Publish
+        & "${{ steps.find_msbuild.outputs.msbuild_path }}" WIP.Keygen.csproj /p:Configuration=Release /p:RuntimeIdentifier=win-x86 /p:OutputPath=bin\Release\win-x86-net /p:SelfContained=true /p:PublishSingleFile=true /t:Publish
         mv bin/Release/win-x86-netpublish/WIP.Keygen.exe bin/Release/WIP.Keygen.x86-net.exe
 
     - name: Create Release
